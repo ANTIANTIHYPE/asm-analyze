@@ -1,12 +1,9 @@
 #pragma once
 
 #include <string>
-#include <cstdint>
 #if defined(_WIN32) || defined(_WIN64)
 #define NOMINMAX
 #include <Windows.h>
-// #else
-// #include <unistd.h>
 #endif
 
 class Color {
@@ -34,7 +31,7 @@ public:
         /**
          * Bright Magenta text color.
          */
-        BRIGHT_MAGENTA = 95, // sync with the `first` repo color hint++ file
+        BRIGHT_MAGENTA = 95,
         /**
          * Default text color (reset to console default).
          */

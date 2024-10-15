@@ -1,22 +1,29 @@
-Checks:
-- 'clang-analyzer-*'
-- '-*,cppcoreguidelines-*'
-- 'readability-*'
-- 'performance-*'
-- 'portability-*'
-- 'modernize-*'
+
+Language: Cpp
+Standard: Cpp20
+
+Checks: |
+  'clang-analyzer-*'
+  '-*,cppcoreguidelines-*'
+  'readability-*'
+  'performance-*'
+  'portability-*'
+  'modernize-*'
 
 WarningsAsErrors: true
 
 CheckOptions:
   - key:             modernize-use-nullptr.NullMacros
     value:           'NULL'
+
   - key:             modernize-loop-convert.MaxCopySize
     value:           '16'
 
-FormatStyle:        'file'
 HeaderFilterRegex:  '.*'
 AnalyzeTemporaryDtors: false
 
-ExtraArgs:          ['--std=c++23']
-ExtraArgsBefore:    []
+AlignAfterOpenBracket: true
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignTrailingComments: true
+PointerAlignment: Left
+ReflowComments: true

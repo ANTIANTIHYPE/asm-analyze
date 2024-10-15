@@ -40,7 +40,7 @@ namespace dbg {
           @param message The message to log.
           @param level The log level to use (from the Level enum).
          */
-        [[noreturn]] inline const static void log(const std::string& message, Level level) {
+        inline const static void log(const std::string& message, Level level) {
             std::string l{};
             Color::Code cc = Color::RED;
 
@@ -106,7 +106,7 @@ namespace dbg {
 
     /**
      A class for miscellaneous helper functions that didn't fit in any other one.
-    */
+     */
     class Misc {
     public:
         /**
@@ -118,10 +118,10 @@ namespace dbg {
         [[noreturn]] inline const static void fexit(const std::string& message, const int& code = 1) {
             dbg::Debugger::fatal(message);
             prefexit();
-            std::exit(code); // i don't know where to put this :(
+            exit(code); // i don't know where to put this :(
         }
 
-        [[noreturn]] inline const static void prefexit() {
+        inline const static void prefexit() {
             std::cout << "Press Enter to exit...";
             std::cin.sync();
         }
