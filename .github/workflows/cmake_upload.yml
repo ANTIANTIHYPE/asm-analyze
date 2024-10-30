@@ -77,9 +77,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v0.1.0
-          release_name: Release v0.1.0
+          name: v0.1.0
           draft: false
-          prerelease: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.github.token }}
 
