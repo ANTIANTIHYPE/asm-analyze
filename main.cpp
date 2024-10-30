@@ -1,15 +1,17 @@
-#include "etc/include.h"
+#include "include.h"
+#include <chrono>
+#include <cstdint>
 
 const static std::unordered_set<std::string> forbidden = {
     "CON",  "PRN",  "AUX",  "NUL",  "COM1", "COM2", "COM3", "COM4",
     "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3",
     "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
 
-const static std::unordered_set<std::string> supportedExtensions = { // no .lst
+const static std::unordered_set<std::string> supportedExtensions = { // no lst
     "asm", "s", "hla", "inc", "palx", "mid"
 };
 
-const static std::string VERSION = "0.1.0"; // ok
+const static std::string VERSION = "0.1.0";
 const static std::string filename;
 
 int main() {
@@ -263,7 +265,7 @@ int main() {
     return "Unknown instruction: " + opcode;
 }
 
-[[nodiscard]] auto analyzeOperands(const std::string& operands) -> std::string {
+[[nodiscard]] auto analyzeOperands(std::string& operands) -> std::string {
     std::string operandComment;
     std::string operands2 = operands;
     size_t pos = 0;
@@ -278,19 +280,42 @@ int main() {
     return operandComment;
 }
 
-[[nodiscard]] auto analyzeOperand(const std::string& operand, bool appendType) -> std::string {
-    if (operand.empty()) return "Empty operand";
+[[nodiscard]] auto analyzeOperand(std::string& operand, bool appendType) -> std::string {
+    if (operand.empty()) return "";
+
+    for (char &c : operand) {
+        c = std::tolower(static_cast<uint8_t>(c));
+    }
 
     // Recognized registers
     static const std::unordered_set<std::string> registers = {
-        "eax", "ebx", "ecx", "edx", "esi", "edi", "esp", "ebp",
-        "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rsp", "rbp",
-        "ah", "bh", "ch", "dh", "al", "bl", "cl", "dl",
-        "spl", "bpl", "sil", "dil",
-        "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
-        "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d",
-        "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w",
-        "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b"
+        // okay what was i on
+        "rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
+        "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp", "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d",
+        "ax", "bx", "cx", "dx", "si", "di", "bp", "sp", "r8w", "r9w", "r10w", "r11w", "r12w", "r13w", "r14w", "r15w",
+        "al", "ah", "bl", "bh", "cl", "ch", "dl", "dh", "sil", "dil", "bpl", "spl", "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b",
+
+        "eip", "rip",
+        "eflags", "rflags",
+
+        "st0", "st1", "st2", "st3", "st4", "st5", "st6", "st7",
+
+        "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7",
+        "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15",
+        "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15",
+        "zmm0", "zmm1", "zmm2", "zmm3", "zmm4", "zmm5", "zmm6", "zmm7", "zmm8", "zmm9", "zmm10", "zmm11", "zmm12", "zmm13", "zmm14", "zmm15", "zmm16", "zmm17", "zmm18", "zmm19", "zmm20", "zmm21", "zmm22", "zmm23", "zmm24", "zmm25", "zmm26", "zmm27", "zmm28", "zmm29", "zmm30", "zmm31",
+
+        //unsed in x86/x64>vvvvv
+        "cr0", "cr1", "cr2", "cr3", "cr4",
+        "dr0", "dr1", "dr2", "dr3", /* 2 reserved... */ "dr6", "dr7",
+        "tr3", "tr4", "tr5", "tr6", "tr7",
+
+        "gdtr", "idtr", "ldtr", "msw",
+
+        // MSRs
+        "msr_ia32_apic_base", "msr_ia32_mtrrcap", "msr_ia32_mtrr_physbase0", "msr_ia32_mtrr_physbase1", "msr_ia32_mtrr_physbase2", "msr_ia32_mtrr_physbase3", "msr_ia32_mtrr_physbase4", "msr_ia32_mtrr_physbase5", "msr_ia32_mtrr_physbase6", "msr_ia32_mtrr_physbase7", "msr_ia32_mtrr_physbase8", "msr_ia32_mtrr_physbase9", "msr_ia32_mtrr_physbase10",
+        "msr_ia32_mtrr_physmask0", "msr_ia32_mtrr_physmask1", "msr_ia32_mtrr_physmask2", "msr_ia32_mtrr_physmask3", "msr_ia32_mtrr_physmask4", "msr_ia32_mtrr_physmask5", "msr_ia32_mtrr_physmask7", "msr_ia32_mtrr_physmask8", "msr_ia32_mtrr_physmask9", "msr_ia32_mtrr_physmask10", "msr_ia32_perf_status", "msr_ia32_perf_ctl", "msr_ia32_time_stamp_counter",
+        "msr_ia32_feature_control", "msr_ia32_sysenter_cs", "msr_ia32_sysenter_esp", "msr_ia32_sysenter_eip", "msr_ia32_debugctl", "msr_ia32_sgxleaf"
     };
 
     // Check if the operand is a register

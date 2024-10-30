@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "color.hpp"
+#include <color.hpp>
 #include <iostream>
 
 /**
@@ -72,7 +72,7 @@ namespace dbg {
          *
           @param message The message to log.
          */
-        [[noreturn]] inline const static void info(const std::string& message) {
+        inline const static void info(const std::string& message) {
             log(message, INFO);
         }
 
@@ -81,7 +81,7 @@ namespace dbg {
          *
           @param message The message to log.
          */
-        [[noreturn]] inline const static void warn(const std::string& message) {
+        inline const static void warn(const std::string& message) {
             log(message, WARN);
         }
 
@@ -90,7 +90,7 @@ namespace dbg {
          *
           @param message The message to log.
          */
-        [[noreturn]] inline const static void error(const std::string& message) {
+        inline const static void error(const std::string& message) {
             log(message, ERR);
         }
 
@@ -99,33 +99,29 @@ namespace dbg {
          *
           @param message The message to log.
          */
-        [[noreturn]] inline const static void fatal(const std::string& message) {
+        inline const static void fatal(const std::string& message) {
             log(message, FATAL);
         }
     };
 
-    /**
-     A class for miscellaneous helper functions that didn't fit in any other one.
-     */
-    class Misc {
-    public:
+    namespace Misc {
         /**
-          Logs a fatal error message and exists the program.
-         *
-          @param message The message to log.
-          @param code Exit code (default is 1).
-         */
-        [[noreturn]] inline const static void fexit(const std::string& message, const int& code = 1) {
-            dbg::Debugger::fatal(message);
-            prefexit();
-            exit(code); // i don't know where to put this :(
-        }
-
+        Logs a fatal error message and exits the program.
+        *
+        @param message The message to log.
+        @param code Exit code (default is 1).
+        */
         inline const static void prefexit() {
             std::cout << "Press Enter to exit...";
             std::cin.sync();
         }
-    };
+
+        [[noreturn]] inline const static void fexit(const std::string& message, const int& code = 1) {
+            Debugger::fatal(message);
+            prefexit(); // Now this will work since prefexit is defined before fexit
+            exit(code); // This will terminate the program
+        }
+    }
 
     /**
       A namespace for debugging macros.
@@ -137,7 +133,7 @@ namespace dbg {
           @param message The message to log.
          */
         template <typename T>
-        [[noreturn]] inline constexpr void info(const T& message) {
+        inline constexpr void info(const T& message) {
             dbg::Debugger::info(message);
         }
 
@@ -147,7 +143,7 @@ namespace dbg {
           @param message The message to log.
          */
         template <typename T>
-        [[noreturn]] inline constexpr void warn(const T& message) {
+        inline constexpr void warn(const T& message) {
             dbg::Debugger::warn(message);
         }
 
@@ -157,7 +153,7 @@ namespace dbg {
           @param message The message to log.
          */
         template <typename T>
-        [[noreturn]] inline constexpr void error(const T& message) {
+        inline constexpr void error(const T& message) {
             dbg::Debugger::error(message);
         }
 
@@ -167,7 +163,7 @@ namespace dbg {
           @param message The message to log.
          */
         template <typename T>
-        [[noreturn]] inline constexpr void fatal(const T& message) {
+        inline constexpr void fatal(const T& message) {
             dbg::Debugger::fatal(message);
         }
     }
