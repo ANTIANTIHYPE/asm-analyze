@@ -1,13 +1,7 @@
-name: CMake CI/CD
+name: CMake CI/CD (Build & Deploy)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "**"
-  pull_request:
-    branches:
-      - "**"
 
 jobs:
   build:

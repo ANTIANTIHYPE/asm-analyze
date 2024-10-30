@@ -1,0 +1,46 @@
+name: CMake CI/CD (Build)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: Windows
+            os: windows-latest
+            path: build\Debug\asm-analyze.exe
+            artifact-name: win
+
+          - name: MacOS
+            os: macos-latest
+            path: build/asm-analyze
+            artifact-name: macos
+
+          - name: Linux
+            os: ubuntu-latest
+            path: build/asm-analyze
+            artifact-name: linux
+
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Configure and Build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
+          echo "Built successfully"
