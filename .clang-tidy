@@ -1,25 +1,23 @@
-
 Language: Cpp
 Standard: Cpp20
 
-Checks: |
-  'clang-analyzer-*'
-  '-*,cppcoreguidelines-*'
-  'readability-*'
-  'performance-*'
-  'portability-*'
-  'modernize-*'
+Checks:
+  - 'clang-analyzer-*'
+  - '-*,cppcoreguidelines-*'
+  - 'readability-*'
+  - 'performance-*'
+  - 'portability-*'
+  - 'modernize-*'
 
 WarningsAsErrors: true
 
 CheckOptions:
-  - key:             modernize-use-nullptr.NullMacros
-    value:           'NULL'
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  - key: modernize-loop-convert.MaxCopySize
+    value: '16'
 
-  - key:             modernize-loop-convert.MaxCopySize
-    value:           '16'
-
-HeaderFilterRegex:  '.*'
+HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false
 
 AlignAfterOpenBracket: true
