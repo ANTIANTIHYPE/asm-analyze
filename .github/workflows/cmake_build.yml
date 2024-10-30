@@ -43,4 +43,5 @@ jobs:
           cd build
           cmake ..
           cmake --build .
+          echo .
           echo "Built successfully"
