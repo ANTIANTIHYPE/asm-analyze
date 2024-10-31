@@ -105,7 +105,7 @@ namespace dbg {
 
     namespace Misc {
         inline static void pause() {
-#if defiened(_WIN32) || defiened(_WIN64) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
+#if defined(_WIN32) || defined(_WIN64) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
             system("pause"); // :cry:
 #elif defined(__GNUC__) || defined(__clang__) // GCC and Clang
             const char message[] = "Press any key to continue..."; // Define the message in memory
