@@ -105,16 +105,8 @@ namespace dbg {
 
     namespace Misc {
         inline static void pause() {
- #if defined(_MSC_VER) // MSVC
-            __asm {
-                mov rax, 0x1              // syscall: write
-                mov rdi, 0                // file descriptor: stdout
-                lea rsi, message          // message pointer
-                mov rdx, 30               // length
-                syscall                   // invoke syscall
-                xor rax, rax              // clear rax
-            }
-            __declspec(align(16)) const char message[] = "Press any key to continue...";
+#if defiened(_WIN32) || defiened(_WIN64) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
+            system("pause"); // :cry:
 #elif defined(__GNUC__) || defined(__clang__) // GCC and Clang
             const char message[] = "Press any key to continue..."; // Define the message in memory
 
