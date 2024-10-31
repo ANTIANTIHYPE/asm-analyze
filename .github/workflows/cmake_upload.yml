@@ -11,7 +11,7 @@ jobs:
         config:
           - name: Windows
             os: windows-latest
-            path: build\Debug\asm-analyze.exe
+            path: build/Debug/asm-analyze.exe
             artifact-name: asm-analyze-win.exe
 
           - name: macOS
@@ -60,6 +60,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v0.1.0_${{ matrix.config.os }}
-          files: ${{ matrix.config.path }}
+          files: ./${{ matrix.config.path }}
         env:
           GITHUB_TOKEN: ${{ secrets.github.token }}
