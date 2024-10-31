@@ -10,8 +10,7 @@ namespace dbg {
     /**
       A class for logging debug messages with different levels of severity.
      */
-    class Debugger {
-    public:
+    namespace Debugger {
         /**
           Enumerates the available log levels.
          */
@@ -61,9 +60,9 @@ namespace dbg {
                 break;
             }
 
-            std::string colored = Color::colorize(l, cc);
+            std::string color = Color::colorize(l, cc);
 
-            std::cout << "[" << colored << "] ";
+            std::cout << "[" << color << "] ";
             std::cout << message << '\n';
         }
 
@@ -102,26 +101,50 @@ namespace dbg {
         inline const static void fatal(const std::string& message) {
             log(message, FATAL);
         }
-    };
+    } // namespace Debugger
 
     namespace Misc {
-        /**
-        Logs a fatal error message and exits the program.
-        *
-        @param message The message to log.
-        @param code Exit code (default is 1).
-        */
-        inline const static void prefexit() {
-            std::cout << "Press Enter to exit...";
-            std::cin.sync();
+        inline static void pause() {
+ #if defined(_MSC_VER) // MSVC
+            __asm {
+                mov rax, 0x1              // syscall: write
+                mov rdi, 0                // file descriptor: stdout
+                lea rsi, message          // message pointer
+                mov rdx, 30               // length
+                syscall                   // invoke syscall
+                xor rax, rax              // clear rax
+            }
+            __declspec(align(16)) const char message[] = "Press any key to continue...";
+#elif defined(__GNUC__) || defined(__clang__) // GCC and Clang
+            const char message[] = "Press any key to continue..."; // Define the message in memory
+
+            asm (
+                "mov $1, %%rax\n"         // syscall: write
+                "mov $1, %%rdi\n"         // file descriptor: stdout
+                "mov %0, %%rsi\n"         // message pointer
+                "mov $30, %%rdx\n"        // length
+                "syscall\n"               // invoke syscall
+                :
+                : "r"(message)
+                : "rax", "rdi", "rsi", "rdx"
+            );
+#else
+#error "Unsupported compiler" // we'll error for now
+#endif
         }
 
+        /**
+          Logs a fatal error message and exits the program.
+         *
+          @param message The message to log.
+          @param code Exit code (default is 1).
+         */
         [[noreturn]] inline const static void fexit(const std::string& message, const int& code = 1) {
             Debugger::fatal(message);
-            prefexit(); // Now this will work since prefexit is defined before fexit
-            exit(code); // This will terminate the program
+            pause(); // Now this will work since pause is defined before fexit
+            exit(code); // This will terminate the program (wow)
         }
-    }
+    } // namespace Misc
 
     /**
       A namespace for debugging macros.
@@ -134,7 +157,7 @@ namespace dbg {
          */
         template <typename T>
         inline constexpr void info(const T& message) {
-            dbg::Debugger::info(message);
+            Debugger::info(message);
         }
 
         /**
@@ -144,7 +167,7 @@ namespace dbg {
          */
         template <typename T>
         inline constexpr void warn(const T& message) {
-            dbg::Debugger::warn(message);
+            Debugger::warn(message);
         }
 
         /**
@@ -154,7 +177,7 @@ namespace dbg {
          */
         template <typename T>
         inline constexpr void error(const T& message) {
-            dbg::Debugger::error(message);
+            Debugger::error(message);
         }
 
         /**
@@ -164,7 +187,7 @@ namespace dbg {
          */
         template <typename T>
         inline constexpr void fatal(const T& message) {
-            dbg::Debugger::fatal(message);
+            Debugger::fatal(message);
         }
-    }
-}
+    } // namespace Macros
+} // namespace dbg

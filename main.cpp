@@ -51,18 +51,23 @@ int main() {
     }
 
     // Check the remaining part of the file name
-    if (forbidden.count(ufilename) > 0)
+    if (forbidden.count(ufilename) > 0) {
         dbg::Misc::fexit("Detected forbidden keyword");
+    }
 
     auto begin = std::chrono::high_resolution_clock::now();
 
     std::ifstream originalFile(filename);
-    if (!originalFile)
+    if (!originalFile) {
         dbg::Misc::fexit("File not found");
+    }
 
     std::string nfilename = filename;
-    if (dotPos != std::string::npos) nfilename.insert(dotPos, "_analyzed");
-    else nfilename += "_analyzed";
+    if (dotPos != std::string::npos) {
+        nfilename.insert(dotPos, "_analyzed");
+    } else {
+        nfilename += "_analyzed";
+    }
 
     std::ofstream newFile(nfilename);
     if (!newFile)
@@ -94,7 +99,7 @@ int main() {
 
     auto delta = std::chrono::high_resolution_clock::now() - begin;
     dbg::Macros::info("Successfully analyzed " + filename + " in " + std::to_string(std::chrono::duration<double>(delta).count()) + "s");
-    dbg::Misc::prefexit();
+    dbg::Misc::pause();
 
     return 0;
 }
