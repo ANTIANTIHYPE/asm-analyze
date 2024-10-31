@@ -25,11 +25,10 @@ jobs:
 
             const labelMapping = {
               'dependencies': 'bump',
-              'bug-fix': 'bug-fix', // yeah how did i
               'bug': 'bug',
-              'feature': 'enhancement',
-              'feat': 'enhancement',
-              'docs': 'priority: high',
+              'enhancement': 'feature',
+              'enhancement': 'feat',
+              'documentation': 'docs',
               'urgent': 'priority: high',
               'documentation': 'documentation',
               'LICENSE 🔐': 'license',
