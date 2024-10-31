@@ -105,10 +105,11 @@ namespace dbg {
 
     namespace Misc {
         inline static void pause() {
-#if defined(_WIN32) || defined(_WIN64) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
-            system("pause"); // :cry:
-#elif defined(__GNUC__) || defined(__clang__) // GCC and Clang
-            const char message[] = "Press any key to continue..."; // Define the message in memory
+          // _WIN32 macro is already defined in x64 Windows
+#if defined(__WIN32__) || defined(__NT__) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
+            system("pause"); // :cry: ultimate death
+#elif defined(__GNUC__) || defined(__clang__) && !defined() // GCC and Clang
+            const char message[] = "Press any key to continue..."; // okay this is crazy
 
             asm (
                 "mov $1, %%rax\n"         // syscall: write
@@ -120,6 +121,9 @@ namespace dbg {
                 : "r"(message)
                 : "rax", "rdi", "rsi", "rdx"
             );
+#elif defined(__APPLE__)
+            std::cout << "Press any key to continue..." << std::endl;
+            std::cin.get();
 #else
 #error "Unsupported compiler" // we'll error for now
 #endif
