@@ -24,9 +24,12 @@ jobs:
             const labels = new Set();
 
             const labelMapping = {
+              'dependencies': 'bump',
               'bug-fix': 'bug-fix', // yeah how did i
               'bug': 'bug',
               'feature': 'enhancement',
+              'feat': 'enhancement',
+              'docs': 'priority: high',
               'urgent': 'priority: high',
               'documentation': 'documentation',
               'LICENSE 🔐': 'license',
