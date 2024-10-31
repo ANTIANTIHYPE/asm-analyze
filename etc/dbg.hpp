@@ -106,7 +106,7 @@ namespace dbg {
     namespace Misc {
         inline static void pause() {
           // _WIN32 macro is already defined in x64 Windows
-#if defined(__WIN32__) || defined(__NT__) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
+#if defined(_WIN32) || defined(__WIN32__) || defined(__NT__) && !(defined(__GNUC__) || defined(__clang__)) // Windows without GCC or Clang
             system("pause"); // :cry: ultimate death
 #elif (defined(__GNUC__) || defined(__clang__)) && !defined(__APPLE__) // GCC and Clang andn MACOS DAMNED
             const char message[] = "Press any key to continue..."; // okay this is crazy
