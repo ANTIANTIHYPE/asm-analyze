@@ -61,5 +61,3 @@ jobs:
         with:
           tag_name: v0.1.0_${{ matrix.config.os }}
           files: ./${{ matrix.config.path }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.github.token }}
